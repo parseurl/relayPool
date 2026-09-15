@@ -97,5 +97,5 @@ echo "-----------------------------------"   # 可选分隔线
 echo "[relayPool]"
 for ((i=0; i<container_count; i++)); do
     current_ip="${network_part}.$((start_host + i))"
-    echo "http://$current_ip:24680"
+    echo "http://$current_ip:24678"
 done

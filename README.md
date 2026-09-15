@@ -56,7 +56,7 @@ docker network create -d macvlan
 |---|---|---|
 | `PORT` | 代理服务监听端口 | 24678 |
 | `USER_EXPIRE_SECONDS` | 用户 IPv6 地址有效期（秒） | 10800 |
-| `POOL_TARGET` | IPv6 地址池目标数量 | 100 |
+| `POOL_TARGET` | IPv6 地址池目标数量 | 80 |
 | `CHECK_INTERVAL_SECONDS` | `/checkPrefix` 定时请求间隔（秒） | 300 |
 
 ```
