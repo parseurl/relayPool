@@ -248,24 +248,26 @@ json: {
 > 以下脚本可保存为 prefix.sh 文件，修改 HOST、INTERFACE 这两个变量
 >
 > 定时任务添加：`*/2 * * * * /路径/prefix.sh`
+> 
+> 青龙用户可添加到task_before.sh里面
 
 ```bash
 HOST="ip:24678"
 INTERFACE="br-lan"
 SECRET="Archer"
 
-prefix=${ip -6 addr show dev "$INTERFACE" | grep -E 'inet6.*global' | awk '{print $2}' | cut -d'/' -f1 | grep '^240' | head -n1 | cut -d':' -f1-4}
+prefix=$(ip -6 addr show dev "$INTERFACE" | grep -E 'inet6.*global' | awk '{print $2}' | cut -d'/' -f1 | grep '^240' | head -n1 | cut -d':' -f1-4)
 
 if [ -n "$prefix" ]; then
-    time=${date +%s}
-    access=${echo -n "${SECRET}${prefix}${time}" | md5sum | awk '{print $1}'}
-    curl -X POST 
-         -H "Content-Type: application/json" 
-         -d "{"prefix":"$prefix","time":$time,"access":"$access"}" 
+    time=$(date +%s)
+    access=$(echo -n "${SECRET}${prefix}${time}" | md5sum | awk '{print $1}') 
+    curl -s -X POST \
+         -H "Content-Type: application/json" \
+         -d "{\"prefix\":\"$prefix\",\"time\":$time,\"access\":\"$access\"}" \
          "http://$HOST/ipv6Prefix"
 fi
-```
 
+```
 ---
 
 ### 5. 主动检查前缀变动（/checkPrefix）
@@ -299,7 +301,10 @@ GET http://ip:24678/checkPrefix?delete=1
   "access": "md5(Archer + prefix + time)"
 }
 ```
-
+> 可快速使用 checkPrefix.sh 搭建一个本地接口，需要和relaypool同宿主机，ip自行分配：
+``` 
+chmod +x checkPrefix.sh && ./checkPrefix.sh 192.168.100.32
+```
 > 定时请求间隔由环境变量 `CHECK_INTERVAL_SECONDS` 控制，默认 300 秒。
 
 ---
